@@ -1,15 +1,22 @@
+/*
+ * Define processing for product route
+ *
+*/
+
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const order = require('../models/order');
 
-const Order = require('../models/order');
-const Product = require('../models/product');
+const Order = require('../models/order'); // Call order model
+const Product = require('../models/product'); // Call product model
 
 
+// Handle GET request
 router.get('/', (req, res, next) => {
     Order.find()
         .select('product quantity _id')
+        .populate('product','name')
         .exec()
         .then(
             docs => {
@@ -35,6 +42,8 @@ router.get('/', (req, res, next) => {
         });
 });
 
+
+// Hansle POST request
 router.post('/', (req, res, next) => {
     Product.findById(req.body.prodId)
         .then(product => {
@@ -68,9 +77,10 @@ router.post('/', (req, res, next) => {
         });
 });
 
+// Handle GET request for specific order
 router.get('/:orderId', (req, res, next) => {
     const id = req.params.orderId;
-    Order.findById(id).exec()
+    Order.findById(id).populate('product').exec()
         .then(doc => {
             if(doc){
                 res.status(200).json({
@@ -92,6 +102,8 @@ router.get('/:orderId', (req, res, next) => {
         });
 });
 
+
+// Handle delete request
 router.delete('/:orderId', (req, res, next) => {
     const id = req.params.orderId;
     Order.remove({ _id: id }).exec()

@@ -1,9 +1,15 @@
+/*
+ * Product routes
+ *
+*/
+
 const express = require('express');
 const mongoose = require('mongoose');
-const Product = require('../models/product')
+const Product = require('../models/product') // Call product model
 
 const router = express.Router();
 
+// Handle GET request
 router.get('/', (req, res, next) => {
     Product.find()
         .select('name price _id')
@@ -31,6 +37,7 @@ router.get('/', (req, res, next) => {
         })
 });
 
+// Handle POST request
 router.post('/', (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -58,6 +65,7 @@ router.post('/', (req, res, next) => {
     
 }); 
 
+// Handle GET request for specific product
 router.get('/:prodId', (req, res, next) => {
     const id = req.params.prodId;
     Product.findById(id).exec().then( doc => {
@@ -84,6 +92,7 @@ router.get('/:prodId', (req, res, next) => {
     });
 });
 
+// Handle PATCH request (for edit product)
 router.patch('/:prodId', (req, res, next) => {
     const id = req.params.prodId;
     const updateOps = {}
@@ -106,6 +115,7 @@ router.patch('/:prodId', (req, res, next) => {
     });
 });
 
+// Handle DELETE request (delete a product)
 router.delete('/:prodId', (req, res, next) => {
     const id = req.params.prodId;
     Product.remove({_id: id}).exec().then(result => {
@@ -119,4 +129,5 @@ router.delete('/:prodId', (req, res, next) => {
         })
     });
 });
+
 module.exports = router;
