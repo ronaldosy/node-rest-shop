@@ -18,6 +18,7 @@ mongoose.connect('mongodb+srv://node-shop:' + process.env.MONGO_ATLAS_PWD + '@cl
 });
 
 app.use(morgan('dev')); // Initiate morgan
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false})); // Enable body-parser to parse url request
 app.use(bodyParser.json()); // Enable body-parser to parse json request
 
