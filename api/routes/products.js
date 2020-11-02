@@ -5,8 +5,8 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const multer = require('multer');
-const {nanoid} = require('nanoid');
+const multer = require('multer'); // Library to handle file upload
+const {nanoid} = require('nanoid'); // Library to generate random id
 
 const Product = require('../models/product') // Call product model
 
@@ -25,7 +25,7 @@ router.get('/', (req, res, next) => {
                         _id: doc._id,
                         name: doc.name,
                         price: doc.price,
-                        image: doc.image,
+                        image: '/uploads/' + doc.image,
                         request: {
                             type: 'GET',
                             url: 'http://127.0.0.1:3000/products/' + doc._id
@@ -41,18 +41,20 @@ router.get('/', (req, res, next) => {
         })
 });
 
+// Define how store file in disk
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './uploads');
     },
     filename: function(req, file, cb){
         filename = file.originalname
-        extension = filename.split('.').pop();     
-        fileId = nanoid();   
+        extension = filename.split('.').pop(); // Get orginal file extensions
+        fileId = nanoid(); // Generate random id for the upload file
         return cb(null, fileId+"."+extension);
     }
 });
 
+// Define which type of file that  can be upload
 const fileFilter = function(req, file, cb){
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
         cb(null, true);
@@ -60,6 +62,8 @@ const fileFilter = function(req, file, cb){
         cb(null, false);
     }
 }
+
+// Handling file upload
 const upload = multer({
                 storage: storage, 
                 limits:{fileSize: 1024 * 1024 * 2},
