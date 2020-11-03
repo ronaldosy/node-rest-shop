@@ -9,8 +9,9 @@ const mongoose = require('mongoose');       // Library for connecting to MongoDB
 
 const app = express(); // initiate express 
 
-const prodRoute = require('./api/routes/products'); // Initiate products
-const orderRoute = require('./api/routes/orders');  // Initiate orders
+const prodRoute = require('./api/routes/products'); // Import Product route
+const orderRoute = require('./api/routes/orders');  // Import Order route
+const userRoute = require('./api/routes/users'); //Import User route
 
 // Initiate connection to MongoDB
 mongoose.connect('mongodb+srv://node-shop:' + process.env.MONGO_ATLAS_PWD + '@cluster0.zuyot.mongodb.net/nodeshop?retryWrites=true&w=majority',{
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 
 app.use('/products', prodRoute); // Map Product router
 app.use('/orders', orderRoute); // Map Order router
+app.use('/users', userRoute); // Map to User route
 
 // Define 404 response
 app.use((req, res, next) => {

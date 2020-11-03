@@ -1,7 +1,6 @@
-/*
+/**
  * Product routes
- *
-*/
+ */
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,6 +8,7 @@ const multer = require('multer'); // Library to handle file upload
 const {nanoid} = require('nanoid'); // Library to generate random id
 
 const Product = require('../models/product') // Call product model
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -71,7 +71,7 @@ const upload = multer({
             });
 
 // Handle POST request
-router.post('/',upload.single('image'), (req, res, next) => {
+router.post('/', checkAuth, upload.single('image'), (req, res, next) => {
     console.log(req.file);
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -130,7 +130,7 @@ router.get('/:prodId', (req, res, next) => {
 });
 
 // Handle PATCH request (for edit product)
-router.patch('/:prodId', (req, res, next) => {
+router.patch('/:prodId', checkAuth, (req, res, next) => {
     const id = req.params.prodId;
     const updateOps = {}
     for (const ops of req.body){
@@ -153,7 +153,7 @@ router.patch('/:prodId', (req, res, next) => {
 });
 
 // Handle DELETE request (delete a product)
-router.delete('/:prodId', (req, res, next) => {
+router.delete('/:prodId', checkAuth, (req, res, next) => {
     const id = req.params.prodId;
     Product.remove({_id: id}).exec().then(result => {
         res.status(200).json({
